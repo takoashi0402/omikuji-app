@@ -1,194 +1,247 @@
-  <!DOCTYPE html>
-  <html lang="ja">
-  <head>
-    <meta charset="UTF-8">
-    <title>おみくじ</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <style>
-      :root { color-scheme: dark; font-family: "Segoe UI", "Yu Gothic", sans-serif; }
-      body {
-        margin: 0;
-        min-height: 100vh;
-        color: #f7f4ff;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        background: radial-gradient(circle at 20% 20%, #16223c, #04060f 70%);
-        overflow: hidden;
-      }
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>おみくじ</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      color-scheme: light;
+      font-family: "Noto Serif JP", "Source Han Serif JP", serif;
+    }
 
-      /* starry sky layers */
-      body::before, body::after {
-        content: "";
-        position: fixed;
-        inset: -50%;
-        background: radial-gradient(1px 1px at 10px 10px, rgba(255,255,255,0.6), transparent),
-                    radial-gradient(1px 1px at 50px 80px, rgba(255,255,255,0.4), transparent),
-                    radial-gradient(1px 1px at 90px 40px, rgba(255,255,255,0.4), transparent);
-        background-size: 120px 120px;
-        opacity: 0.6;
-        animation: drift 60s linear infinite;
-        z-index: 0;
-      }
-      body::after {
-        animation-duration: 90s;
-        opacity: 0.3;
-        transform: scale(1.2);
-      }
-      @keyframes drift {
-        from { transform: translate3d(0, 0, 0); }
-        to { transform: translate3d(-120px, -120px, 0); }
-      }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 48px 16px;
+      color: #5c3c1a;
+      background: linear-gradient(135deg, #f7f1e6 0%, #efe1c7 48%, #e5d1ae 100%);
+      position: relative;
+      overflow: hidden;
+    }
 
+    body::before,
+    body::after {
+      content: "";
+      position: fixed;
+      inset: -10%;
+      pointer-events: none;
+      opacity: 0.55;
+      mix-blend-mode: multiply;
+      z-index: 0;
+    }
+
+    body::before {
+      background:
+        radial-gradient(circle at 15% 20%, rgba(255, 255, 255, 0.45), rgba(255, 255, 255, 0) 60%),
+        radial-gradient(circle at 80% 25%, rgba(255, 255, 255, 0.35), rgba(255, 255, 255, 0) 55%),
+        repeating-linear-gradient(180deg, rgba(255, 255, 255, 0.22) 0 2px, rgba(255, 255, 255, 0) 2px 5px);
+    }
+
+    body::after {
+      background:
+        linear-gradient(115deg, rgba(196, 171, 128, 0.18), rgba(240, 226, 202, 0.32) 55%, rgba(221, 188, 142, 0.22)),
+        repeating-linear-gradient(135deg, rgba(191, 159, 120, 0.14) 0 10px, rgba(255, 255, 255, 0.06) 10px 22px);
+      filter: blur(0.6px);
+    }
+
+    .card {
+      position: relative;
+      width: min(92vw, 460px);
+      padding: 32px;
+      border-radius: 20px;
+      background: rgba(255, 255, 255, 0.82);
+      border: 1px solid rgba(181, 152, 110, 0.38);
+      box-shadow:
+        0 24px 48px rgba(139, 112, 78, 0.22),
+        inset 0 0 0 1px rgba(255, 246, 235, 0.65);
+      backdrop-filter: blur(8px);
+      z-index: 1;
+    }
+
+    h1 {
+      margin: 0 0 22px;
+      text-align: center;
+      font-size: clamp(1.9rem, 5vw, 2.4rem);
+      letter-spacing: 0.08em;
+      color: #a6471f;
+      text-shadow: 0 1px 0 rgba(255, 255, 255, 0.7);
+    }
+
+    label {
+      display: block;
+      margin-bottom: 6px;
+      font-weight: 600;
+      color: #744b20;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px 16px;
+      border-radius: 14px;
+      border: 1px solid rgba(186, 157, 116, 0.55);
+      background: rgba(255, 251, 244, 0.9);
+      color: inherit;
+      font-size: 1rem;
+      outline: none;
+      transition: border 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    input:focus {
+      border-color: rgba(216, 118, 54, 0.85);
+      box-shadow: 0 0 0 4px rgba(216, 118, 54, 0.15);
+    }
+
+    button {
+      width: 100%;
+      margin-top: 20px;
+      padding: 13px 18px;
+      border: 1px solid #b02a24;
+      border-radius: 12px;
+      background: linear-gradient(120deg, #d8342c, #e94a41 55%, #d8342c 100%);
+      color: #fff7f3;
+      font-weight: 700;
+      font-size: 1.05rem;
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.25s ease, filter 0.2s ease;
+      box-shadow: 0 12px 22px rgba(191, 62, 53, 0.3);
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+      filter: brightness(1.05);
+    }
+
+    button:active {
+      transform: translateY(0);
+      box-shadow: 0 6px 14px rgba(191, 62, 53, 0.22);
+    }
+
+    .result {
+      margin-top: 28px;
+      padding: 22px 20px;
+      border-radius: 18px;
+      background: rgba(255, 249, 239, 0.95);
+      border: 1px solid rgba(190, 160, 120, 0.4);
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.6);
+      opacity: 0;
+      transform: translateY(12px);
+      transition: opacity 0.35s ease, transform 0.35s ease;
+      white-space: pre-line;
+      color: #593819;
+    }
+
+    .result.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .timestamp {
+      display: block;
+      font-size: 0.85rem;
+      color: #a27a45;
+      margin-bottom: 10px;
+    }
+
+    .fortune {
+      font-size: 1.7rem;
+      font-weight: 700;
+      color: #c84d1e;
+      margin-bottom: 8px;
+    }
+
+    .message {
+      font-size: 1.05rem;
+      line-height: 1.7;
+      color: #5d3b1b;
+    }
+
+    .subtitle {
+      margin: 14px 0 0;
+      font-size: 0.92rem;
+      color: #9a7848;
+      letter-spacing: 0.06em;
+    }
+
+    @media (max-width: 480px) {
       .card {
-        position: relative;
-        width: min(92vw, 440px);
-        padding: 28px;
-        border-radius: 20px;
-        background: rgba(12, 16, 32, 0.78);
-        border: 1px solid rgba(139, 119, 255, 0.38);
-        box-shadow:
-          0 0 25px rgba(94, 66, 255, 0.35),
-          inset 0 0 40px rgba(71, 42, 130, 0.35);
-        backdrop-filter: blur(8px);
-        z-index: 1;
-      }
-      .card::before {
-        content: "";
-        position: absolute;
-        inset: 2px;
-        border-radius: 18px;
-        border: 1px solid rgba(255, 215, 141, 0.25);
-        pointer-events: none;
+        padding: 26px 22px;
       }
 
-      h1 {
-        margin: 0 0 18px;
-        text-align: center;
-        font-size: 2rem;
-        letter-spacing: 0.12em;
-        text-transform: uppercase;
-        color: #ffdf99;
-        text-shadow: 0 0 12px rgba(255, 210, 120, 0.6);
-      }
-      label { display: block; margin-bottom: 6px; font-weight: 600; color: #e0dcff; }
-      input {
-        width: 100%;
-        padding: 11px 14px;
-        border-radius: 10px;
-        border: 1px solid rgba(136, 131, 201, 0.5);
-        background: rgba(20, 24, 46, 0.6);
-        color: inherit;
-        font-size: 1rem;
-        outline: none;
-        transition: border 0.2s, box-shadow 0.2s;
-      }
-      input:focus {
-        border-color: rgba(255, 205, 120, 0.7);
-        box-shadow: 0 0 12px rgba(255, 203, 124, 0.4);
-      }
-
+      input,
       button {
-        width: 100%;
-        margin-top: 18px;
-        padding: 13px;
-        border: none;
-        border-radius: 999px;
-        background: linear-gradient(135deg, #ffb347, #ff4e88, #7d47ff);
-        background-size: 200%;
-        color: #1b102f;
-        font-weight: 700;
-        font-size: 1.05rem;
-        cursor: pointer;
-        transition: transform 0.2s ease, background-position 0.4s, box-shadow 0.25s;
-        box-shadow: 0 12px 25px rgba(255, 140, 152, 0.35);
+        font-size: 1rem;
       }
-      button:hover { background-position: 100%; transform: translateY(-2px); }
-      button:active { transform: translateY(0); }
-
-      .result {
-        margin-top: 28px;
-        padding: 20px;
-        border-radius: 16px;
-        background: rgba(19, 14, 40, 0.85);
-        border: 1px solid rgba(173, 143, 255, 0.4);
-        box-shadow: 0 0 18px rgba(123, 97, 255, 0.32);
-        opacity: 0;
-        transform: translateY(12px);
-        transition: opacity 0.35s ease, transform 0.35s ease;
-        white-space: pre-line;
-      }
-      .result.show {
-        opacity: 1;
-        transform: translateY(0);
-      }
-      .timestamp { display: block; font-size: 0.85rem; color: #b0a6ff; margin-bottom: 8px; }
-      .fortune { font-size: 1.6rem; font-weight: 700; color: #ffd479; margin-bottom: 6px; text-shadow: 0 0 8px rgba(255, 210, 130, 0.6); }
-      .message { font-size: 1.05rem; line-height: 1.6; color: #efeaff; }
-      .subtitle { margin: 8px 0 0; font-size: 0.95rem; color: #9f93ff; letter-spacing: 0.05em; }
-    </style>
-  </head>
-  <body>
-    <div class="card">
-      <h1>Omikuji</h1>
-      <label for="nameInput">お名前（匿名なら空欄）</label>
-      <input id="nameInput" type="text" placeholder="紫式部">
-      <button id="drawButton" type="button">おみくじを引いてみる</button>
-      <div id="result" class="result" hidden>
-        <span class="timestamp"></span>
-        <div class="fortune"></div>
-        <div class="message"></div>
-        <div class="subtitle"></div>
-      </div>
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>🌸おみくじ🪭</h1>
+    <label for="nameInput">お名前（匿名なら空欄）</label>
+    <input id="nameInput" type="text" placeholder="紫式部">
+    <button id="drawButton" type="button">おみくじを引いてみる</button>
+    <div id="result" class="result" hidden>
+      <span class="timestamp"></span>
+      <div class="fortune"></div>
+      <div class="message"></div>
+      <div class="subtitle"></div>
     </div>
+  </div>
 
-    <script>
-      const fortunes = [
-        { label: "大吉", message: "夜空に満ちる星のように幸運が降り注ぎます。大胆に動いて吉。" },
-        { label: "中吉", message: "静かな自信が道を照らすとき。準備したことが実を結びます。" },
-        { label: "小吉", message: "小さなきっかけから良い巡り合わせが生まれます。笑顔を忘れずに。" },
-        { label: "吉",   message: "穏やかな風が背中を押すような一日。周りとの調和を大切に。" },
-        { label: "末吉", message: "芽吹きの時期。焦らず水を与えれば、やがて大輪の花が咲きます。" },
-        { label: "凶",   message: "立ち止まり見直す機会。慎重な選択が次の運気を呼び込みます。" },
-        { label: "大凶", message: "闇夜にこそ星は瞬く。計画を練り直し、仕切り直すことで好転します。" }
-      ];
-      const footerHints = [
-        "ラッキーカラー: 紫紺 / ラッキーナンバー: 8",
-        "ラッキーアイテム: 星モチーフの小物",
-        "東の空に願いをかけると吉",
-        "温かい飲み物で心を整えて",
-        "夜に短い散歩をすると閃きが訪れます",
-        "静かな場所で深呼吸を三度"
-      ];
+  <script>
+    const fortunes = [
+      { label: "大吉", message: "夜空に満ちる星のように幸運が降り注ぎます。大胆に動いて吉。" },
+      { label: "中吉", message: "静かな自信が道を照らすとき。準備したことが実を結びます。" },
+      { label: "小吉", message: "小さなきっかけから良い巡り合わせが生まれます。笑顔を忘れずに。" },
+      { label: "吉",   message: "穏やかな風が背中を押すような一日。周りとの調和を大切に。" },
+      { label: "末吉", message: "芽吹きの時期。焦らず水を与えれば、やがて大輪の花が咲きます。" },
+      { label: "凶",   message: "立ち止まり見直す機会。慎重な選択が次の運気を呼び込みます。" },
+      { label: "大凶", message: "闇夜にこそ星は瞬く。計画を練り直し、仕切り直すことで好転します。" }
+    ];
+    const footerHints = [
+      "ラッキーカラー: 紫紺 / ラッキーナンバー: 8",
+      "ラッキーアイテム: 星モチーフの小物",
+      "東の空に願いをかけると吉",
+      "温かい飲み物で心を整えて",
+      "夜に短い散歩をすると閃きが訪れます",
+      "静かな場所で深呼吸を三度"
+    ];
 
-      const nameInput = document.getElementById("nameInput");
-      const drawButton = document.getElementById("drawButton");
-      const resultBox = document.getElementById("result");
-      const tsSpan = resultBox.querySelector(".timestamp");
-      const fortuneEl = resultBox.querySelector(".fortune");
-      const messageEl = resultBox.querySelector(".message");
-      const subtitleEl = resultBox.querySelector(".subtitle");
+    const nameInput = document.getElementById("nameInput");
+    const drawButton = document.getElementById("drawButton");
+    const resultBox = document.getElementById("result");
+    const tsSpan = resultBox.querySelector(".timestamp");
+    const fortuneEl = resultBox.querySelector(".fortune");
+    const messageEl = resultBox.querySelector(".message");
+    const subtitleEl = resultBox.querySelector(".subtitle");
 
-      function drawOmikuji(name) {
-        const pick = fortunes[Math.floor(Math.random() * fortunes.length)];
-        const hint = footerHints[Math.floor(Math.random() * footerHints.length)];
-        const now = new Date().toLocaleString("ja-JP", {
-          year: "numeric", month: "2-digit", day: "2-digit",
-          hour: "2-digit", minute: "2-digit", second: "2-digit"
-        });
-
-        tsSpan.textContent = `[${now}] ${name ? `${name}さんの` : ""}おみくじ結果`;
-        fortuneEl.textContent = `運勢: ${pick.label}`;
-        messageEl.textContent = pick.message;
-        subtitleEl.textContent = hint;
-      }
-
-      drawButton.addEventListener("click", () => {
-        const name = nameInput.value.trim();
-        drawOmikuji(name);
-        resultBox.hidden = false;
-        requestAnimationFrame(() => resultBox.classList.add("show"));
+    function drawOmikuji(name) {
+      const pick = fortunes[Math.floor(Math.random() * fortunes.length)];
+      const hint = footerHints[Math.floor(Math.random() * footerHints.length)];
+      const now = new Date().toLocaleString("ja-JP", {
+        year: "numeric", month: "2-digit", day: "2-digit",
+        hour: "2-digit", minute: "2-digit", second: "2-digit"
       });
-    </script>
-  </body>
-  </html>
+
+      tsSpan.textContent = `[${now}] ${name ? `${name}さんの` : ""}おみくじ結果`;
+      fortuneEl.textContent = `運勢: ${pick.label}`;
+      messageEl.textContent = pick.message;
+      subtitleEl.textContent = hint;
+    }
+
+    drawButton.addEventListener("click", () => {
+      const name = nameInput.value.trim();
+      drawOmikuji(name);
+      resultBox.hidden = false;
+      requestAnimationFrame(() => resultBox.classList.add("show"));
+    });
+  </script>
+</body>
+</html>
